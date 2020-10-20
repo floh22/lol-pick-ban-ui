@@ -13,6 +13,9 @@ import Controller from './state/controller';
 import GlobalContext from './GlobalContext';
 import './Console';
 
+import IngameController from './state/IngameController';
+import IngameDataProviderService from './data/league/IngameDataProviderService';
+
 const argv = minimist(process.argv.slice(2));
 
 // Needs to be done before logging is initialized, in order to set log level correctly
@@ -40,11 +43,18 @@ log.info('                                                   ');
 log.debug('Logging in debug mode!');
 log.info('Configuration: ' + JSON.stringify(GlobalContext.commandLine));
 
+const swapToIngame = (): void => {
+  tickManager.tickable = ingameController;
+};
+const swapToChampSelect = (): void => {
+  tickManager.tickable = controller;
+};
 const state = new State();
 const ddragon = new DataDragon(state);
 const dataProvider = getDataProvider();
-const controller = new Controller({ dataProvider, state, ddragon });
-const tickManager = new TickManager({ controller });
+const controller = new Controller({ dataProvider, state, ddragon, swapToIngame });
+const ingameController = new IngameController({ dataProvider:new IngameDataProviderService(), ddragon, swapToChampSelect });
+const tickManager = new TickManager({ tickable:controller });
 
 const main = async (): Promise<void> => {
   await ddragon.init();

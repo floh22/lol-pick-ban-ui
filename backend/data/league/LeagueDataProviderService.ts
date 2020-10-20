@@ -61,7 +61,7 @@ class LeagueDataProviderService extends EventEmitter
     } else {
       log.info(
         'Using manually configured league installation: ' +
-          GlobalContext.commandLine.leaguePath
+        GlobalContext.commandLine.leaguePath
       );
     }
 
@@ -144,6 +144,19 @@ class LeagueDataProviderService extends EventEmitter
 
     this.emit('disconnected');
   }
+
+
+  async pingIngame(): Promise<boolean> {
+
+    const returnValue = await needle(
+      'get',
+      'https://127.0.0.1:2999/liveclientdata/eventdata',
+      this.requestConfig
+    );
+
+    return (!(returnValue.statusCode === 404));
+  }
+
 }
 
 export default LeagueDataProviderService;

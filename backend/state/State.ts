@@ -1,6 +1,10 @@
 import EventEmitter from 'events';
 import * as fs from 'fs';
 import { Config, StateData, Team } from '../types/dto';
+import logger from "../logging";
+
+const log = logger("state");
+const fetch = require("node-fetch");
 
 class State extends EventEmitter {
   data: StateData;
@@ -9,11 +13,16 @@ class State extends EventEmitter {
     super();
 
     this.data = new StateData();
-    this.data.config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+    //this.data.config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+    this.api("https://stream-api.munich-esports.de/config.json").then(res => {
+      this.data.config = res;
+    });
   }
 
   champselectStarted(): void {
-    this.data.config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+    this.api("https://stream-api.munich-esports.de/config.json").then(res => {
+      this.data.config = res;
+    });
 
     this.emit('champSelectStarted');
 
@@ -97,6 +106,14 @@ class State extends EventEmitter {
 
   getConfig(): Config {
     return this.data.config;
+  }
+
+  async api(url: string): Promise<any> {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json() as Promise<any>;
   }
 }
 

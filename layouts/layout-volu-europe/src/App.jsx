@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Overlay from "./europe/Overlay";
+import OverlayIngame from "./europe/OverlayIngame";
 import convertState from './convertState';
 
 function App() {
@@ -42,8 +43,11 @@ function App() {
     return (
         <div className="App">
             <Overlay state={convertState(globalState, Window.PB.backend)} config={config}/>
+            <OverlayIngame state={convertState(globalState, Window.PB.backend)} config={config}/>
         </div>
     );
+
+
 }
 
 export default App;

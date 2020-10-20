@@ -1,16 +1,16 @@
 import logger from './logging/logger';
 import Timeout = NodeJS.Timeout;
-import Controller from './state/controller';
+import Tickable from './Tickable';
 
 const log = logger('tick');
 
 class TickManager {
-  controller: Controller;
+  tickable: Tickable;
   timeout?: Timeout;
   tickRate = 1;
 
-  constructor(kwargs: { controller: Controller }) {
-    this.controller = kwargs.controller;
+  constructor(kwargs: { tickable: Tickable }) {
+    this.tickable = kwargs.tickable;
   }
 
   startLoop(): void {
@@ -19,9 +19,7 @@ class TickManager {
   }
 
   async runLoop(): Promise<void> {
-    const newState = await this.controller.dataProvider.getCurrentData();
-
-    this.controller.applyNewState(newState);
+    await this.tickable.tick();
   }
 }
 

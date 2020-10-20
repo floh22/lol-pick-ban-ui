@@ -5,7 +5,7 @@ import Pick from "./Pick";
 import css from './style/index.less';
 import Ban from "./Ban";
 
-import logo from '../assets/Logo_Itemania_2019.png';
+import logo from '../assets/munich-esports-logo-white.png';
 
 export default class Overlay extends React.Component {
     state = {
@@ -42,6 +42,7 @@ export default class Overlay extends React.Component {
         if (!state.champSelectActive && this.state.openingAnimationPlayed) {
             this.setState({openingAnimationPlayed: false});
             this.setState({currentAnimationState: css.TheAbsoluteVoid});
+            return null;
         }
 
         console.log(state);

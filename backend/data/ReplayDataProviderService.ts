@@ -64,4 +64,10 @@ export default class ReplayDataProviderService extends EventEmitter implements D
   togglePause(): void {
     this.isPaused = !this.isPaused;
   }
+
+  pingIngame(): Promise<boolean> {
+    return new Promise(() => {
+      return false;
+    });
+  }
 }

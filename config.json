@@ -1,19 +1,19 @@
 {
   "frontend": {
     "scoreEnabled": true,
-    "spellsEnabled": true,
-    "coachesEnabled": true,
+    "spellsEnabled": false,
+    "coachesEnabled": false,
     "blueTeam": {
-      "name": "Team Blue",
-      "score": 2,
-      "coach": "Coach Blue",
-      "color": "rgb(0,151,196)"
+      "name": "Nibelungen eSport Worms",
+      "score": 0,
+      "coach": "",
+      "color": "rgb(0,164,255)"
     },
     "redTeam": {
-      "name": "Team Red",
-      "score": 1,
-      "coach": "Coach Red",
-      "color": "rgb(222,40,70)"
+      "name": "MUC Urban Cats",
+      "score": 0,
+      "coach": "",
+      "color": "rgb(255,0,127)"
     },
     "patch": "9.19"
   },

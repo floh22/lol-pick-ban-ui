@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable quotes */
 import * as ws from "ws";
 import * as fs from "fs";
 import * as http from "http";
@@ -13,6 +15,7 @@ import ChampSelectEndedEvent from "../types/events/ChampSelectEndedEvent";
 import NewActionEvent from "../types/events/NewActionEvent";
 
 const log = logger("websocket");
+const fetch = require("node-fetch");
 
 class WebSocketServer {
   server: ws.Server;
@@ -49,7 +52,7 @@ class WebSocketServer {
   }
 
   startHeartbeat(): void {
-    this.heartbeatInterval = setInterval(this.sendHeartbeat, 1000);
+    this.heartbeatInterval = setInterval(this.sendHeartbeat, 10000);
   }
 
   handleConnection(socket: WebSocket, request: http.IncomingMessage): void {
@@ -67,13 +70,25 @@ class WebSocketServer {
   }
 
   sendHeartbeat(): void {
-    this.config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
-    const heartbeatEvent = new HeartbeatEvent(this.config);
-    const heartbeatSerialized = JSON.stringify(heartbeatEvent);
+    //this.config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+    this.api("https://stream-api.munich-esports.de/config.json").then(res => {
+      this.config = res;
+      const heartbeatEvent = new HeartbeatEvent(this.config);
+      const heartbeatSerialized = JSON.stringify(heartbeatEvent);
 
-    this.clients.forEach((client: WebSocket) => {
-      client.send(heartbeatSerialized);
-    });
+      this.clients.forEach((client: WebSocket) => {
+        client.send(heartbeatSerialized);
+      });
+    })
+
+  }
+
+  async api(url: string): Promise<any> {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    return response.json() as Promise<any>;
   }
 }
 

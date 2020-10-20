@@ -8,9 +8,10 @@ import GlobalContext from '../GlobalContext';
 const log = logger('DataProviderService');
 
 export default interface DataProviderService extends EventEmitter {
-  getCurrentData(): Promise<CurrentState>;
+  getCurrentData(): Promise<any>;
   cacheSummoners(session: Session): Promise<void>;
   getSummonerById(id: number): Summoner;
+  pingIngame(): Promise<boolean>;
 }
 
 export const getDataProvider = (): DataProviderService => {
