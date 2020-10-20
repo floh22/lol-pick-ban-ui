@@ -30,6 +30,8 @@ export default class IngameController extends EventEmitter implements Tickable {
     this.ddragon = kwargs.ddragon;
     this.swapToChampSelect = kwargs.swapToChampSelect;
     this.pastEvents = [];
+    this.pastGameTime = -1;
+    this.gamePaused = false;
   }
 
   applyNewState(newState: CurrentIngameState): void {
