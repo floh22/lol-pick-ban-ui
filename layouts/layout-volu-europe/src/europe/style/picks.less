@@ -10,7 +10,7 @@
     width: 20%;
     height: 100%;
     overflow: hidden;
-    background-color: #0a0a0a;
+    background-color: #001D33;
     border-left: solid var(--border-between-color) 1px;
 
     &.Active {
@@ -29,7 +29,7 @@
       transition: height 1s, font-size 1s, margin-top 1s, background-color 0.3s, color 0.3s;
       height: var(--pick-name-height);
       color: white;
-      background-color: black;
+      background-color: #000f1a;
       text-align: center;
 	  font-family: 'Raleway Light', sans-serif;
       font-size: calc(0.5 * var(--pick-name-height));
@@ -38,7 +38,8 @@
 
     .SummonerSpells {
       position: absolute;
-      top: calc(var(--box-pick-height) - 30px - var(--summoner-spell-size));
+      //top: calc(var(--box-pick-height) - 30px - var(--summoner-spell-size));
+      top: 0;
       right: 0;
       z-index: 10;
 
@@ -53,9 +54,11 @@
       height: calc(100% - var(--pick-name-height));
 
       img {
-        width: calc(100% + calc(2 * var(--pick-image-crop)));
-        height: 100%;
-        object-fit: cover;
+        //width: calc(100% + calc(2 * var(--pick-image-crop)));
+        width: 120%;
+        //height: 102.5%;
+        height: calc(98.25% + calc(2 * var(--pick-image-crop)));
+        object-fit: contain;
         object-position: calc(-1 * var(--pick-image-crop)) calc(-1 * var(--pick-image-crop));
       }
 

@@ -13,6 +13,7 @@ import HeartbeatEvent from "../types/events/HeartbeatEvent";
 import ChampSelectStartedEvent from "../types/events/ChampSelectStartedEvent";
 import ChampSelectEndedEvent from "../types/events/ChampSelectEndedEvent";
 import NewActionEvent from "../types/events/NewActionEvent";
+import { IngameEvent } from "../types/ingame/events/IngameEvent";
 
 const log = logger("websocket");
 const fetch = require("node-fetch");
@@ -61,6 +62,15 @@ class WebSocketServer {
   }
 
   sendEvent(event: PBEvent): void {
+    const serializedEvent = JSON.stringify(event);
+    log.debug(`New Event: ${serializedEvent}`);
+
+    this.clients.forEach((client: WebSocket) => {
+      client.send(serializedEvent);
+    });
+  }
+
+  sendIngameEvent(event: IngameEvent): void {
     const serializedEvent = JSON.stringify(event);
     log.debug(`New Event: ${serializedEvent}`);
 
