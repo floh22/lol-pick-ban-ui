@@ -14,6 +14,8 @@ import ChampSelectStartedEvent from "../types/events/ChampSelectStartedEvent";
 import ChampSelectEndedEvent from "../types/events/ChampSelectEndedEvent";
 import NewActionEvent from "../types/events/NewActionEvent";
 import { IngameEvent } from "../types/ingame/events/IngameEvent";
+import IngameController from "../state/IngameController";
+import { GameUnpauseEvent } from "../types/ingame/events/GameUnpauseEvent";
 
 const log = logger("websocket");
 const fetch = require("node-fetch");
@@ -21,15 +23,17 @@ const fetch = require("node-fetch");
 class WebSocketServer {
   server: ws.Server;
   state: State;
+  ingameState: IngameController;
   clients: Array<WebSocket> = [];
   exampleClients: Array<WebSocket> = [];
   heartbeatInterval?: NodeJS.Timeout;
   config: any;
 
-  constructor(server: http.Server, state: State) {
+  constructor(server: http.Server, state: State, ingameState: IngameController) {
     this.server = new ws.Server({ server });
     this.state = state;
-
+    this.ingameState = ingameState;
+    
     this.sendHeartbeat = this.sendHeartbeat.bind(this);
 
     // Event listeners
@@ -50,6 +54,20 @@ class WebSocketServer {
     state.on("newAction", (action) => {
       this.sendEvent(new NewActionEvent(action));
     });
+
+    //Ingame Event listeners
+    
+    ingameState.on("pause", (pauseEvent) => {
+      this.sendIngameEvent(pauseEvent);
+    })
+
+    ingameState.on("unpause", (unpauseEvent) => {
+      this.sendIngameEvent(unpauseEvent);
+    })
+
+    ingameState.on("ingame_event", (ingameEvent) => {
+      this.sendIngameEvent(ingameEvent);
+    })
   }
 
   startHeartbeat(): void {
@@ -72,7 +90,7 @@ class WebSocketServer {
 
   sendIngameEvent(event: IngameEvent): void {
     const serializedEvent = JSON.stringify(event);
-    log.debug(`New Event: ${serializedEvent}`);
+    log.info(`New Event: ${serializedEvent}`);
 
     this.clients.forEach((client: WebSocket) => {
       client.send(serializedEvent);

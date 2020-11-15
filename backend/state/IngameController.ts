@@ -7,6 +7,8 @@ import logger from "../logging/logger";
 import Tickable from "../Tickable";
 import { CurrentIngameState } from "../data/CurrentIngameState";
 import { IngameEvent } from "../types/ingame/events/IngameEvent";
+import { GamePauseEvent } from "../types/ingame/events/GamePauseEvent";
+import { GameUnpauseEvent } from "../types/ingame/events/GameUnpauseEvent";
 
 const log = logger("IngameController");
 
@@ -41,11 +43,17 @@ export default class IngameController extends EventEmitter implements Tickable {
     });
     */
 
+
+    //TODO: Clear past events on new game
     if(this.pastGameTime === newState.gameStats.gameTime) {
       //SEND GAME PAUSE UPDATE
+      const pauseEvent = new GamePauseEvent(-1, 'GamePause', newState.gameStats.gameTime);
+      this.emit('pause', pauseEvent);
       this.gamePaused = true;
     } else if(this.gamePaused) {
       //SEND GAME UNPAUSE UPDATE
+      const pauseEvent = new GameUnpauseEvent(-1, 'GameUnpause', newState.gameStats.gameTime);
+      this.emit('unpause', pauseEvent);
       this.gamePaused = false;
     }
 
@@ -59,7 +67,7 @@ export default class IngameController extends EventEmitter implements Tickable {
 
     newEvents.forEach(event => {
       console.log('New Event of type' + event.EventName);
-      //SEND EVENT UPDATE
+      this.emit('ingame_event', event);
     });
 
     this.pastEvents = newState.session.Events;
@@ -72,6 +80,7 @@ export default class IngameController extends EventEmitter implements Tickable {
       this.applyNewState(newState);
     }).catch(err => {
       console.log("Game ended!")
+      this.pastEvents = [];
       this.swapToChampSelect();
     });
   }

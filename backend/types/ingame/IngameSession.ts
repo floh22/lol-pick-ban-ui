@@ -25,39 +25,39 @@ export class IngameSession {
 
   constructor(session: Array<any>) {
     session.forEach(event => {
-      switch (event[1]) {
+      switch (event.EventName) {
         case 'GameStart':
-          this.Events.push(event as GameStartEvent);
+          this.Events.push(new GameStartEvent(event));
           break;
         case 'MinionsSpawning':
-          this.Events.push(event as MinionsSpawningEvent);
+          this.Events.push(new MinionsSpawningEvent(event));
           break;
         case 'FirstBrick':
-          this.Events.push(event as FirstTowerEvent);
+          this.Events.push(new FirstTowerEvent(event));
           break;
         case 'TurretKilled':
-          this.Events.push(event as TowerKilledEvent);
+          this.Events.push(new TowerKilledEvent(event));
           break;
         case 'InhibKilled':
-          this.Events.push(event as InhibKilledEvent);
+          this.Events.push(new InhibKilledEvent(event));
           break;
         case 'DragonKill':
-          this.Events.push(event as DragonKillEvent);
+          this.Events.push(new DragonKillEvent(event));
           break;
         case 'HeraldKill':
-          this.Events.push(event as HeraldKillEvent);
+          this.Events.push(new HeraldKillEvent(event));
           break;
         case 'BaronKill':
-          this.Events.push(event as BaronKillEvent);
+          this.Events.push(new BaronKillEvent(event));
           break;
         case 'ChampionKill':
-          this.Events.push(event as ChampionKillEvent);
+          this.Events.push(new ChampionKillEvent(event));
           break;
         case 'Multikill':
-          this.Events.push(event as MultikillEvent);
+          this.Events.push(new MultikillEvent(event));
           break;
         case 'Ace':
-          this.Events.push(event as AceEvent);
+          this.Events.push(new AceEvent(event));
           break;
         default:
           console.log('Cannot decode ingame event! Event type received:' + event[1]);

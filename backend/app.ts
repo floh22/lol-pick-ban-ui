@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import express from 'express';
 import http from 'http';
 
@@ -61,7 +62,7 @@ const main = async (): Promise<void> => {
 
   const server = http.createServer(app);
   app.use('/cache', express.static(__dirname + '/../cache'));
-  const wsServer = new WebSocketServer(server, state);
+  const wsServer = new WebSocketServer(server, state, ingameController);
   wsServer.startHeartbeat();
 
   tickManager.startLoop();

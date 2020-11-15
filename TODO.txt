@@ -1,0 +1,30 @@
+Reset past events on game exit/ clear state on game exit
+game over event
+
+
+front end overlay:
+Dragon Timer
+-> Next dragon Type
+-> Map type
+
+Baron Timer
+
+
+Wish list:
+Gold graph
+-> get gold data
+-> send gold data
+-> gold graphic
+-> trigger gold graph somehow
+
+Runes
+-> get player runes
+-> send players + champions + runes
+-> rune graphic
+-> trigger rune graph somehow. (automated after short delay?)
+
+Penta kill graphics (front end)
+
+Dragon steal graphics (front end)
+
+Baron steal graphics (front end)

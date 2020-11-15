@@ -6,7 +6,7 @@ export  class TowerKilledEvent extends IngameEvent {
     KillerName: string;
     Assisters: Array<string>;
 
-    constructor(EventID: number, EventName: string, EventTime: number, TurretKilled: string, KillerName: string, Assisters: Array<string>) {
+    constructor({ EventID, EventName, EventTime, TurretKilled, KillerName, Assisters }: any) {
         super(EventID, EventName, EventTime);
         this.TurretKilled = TurretKilled;
         this.KillerName = KillerName;

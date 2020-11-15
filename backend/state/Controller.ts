@@ -7,6 +7,7 @@ import State from "./state";
 import DataDragon from "../data/league/datadragon";
 import logger from "../logging/logger";
 import Tickable from "../Tickable";
+import { debug } from "console";
 
 const log = logger("Controller");
 
@@ -16,6 +17,7 @@ export default class Controller extends EventEmitter implements Tickable {
   ddragon: DataDragon;
   swapToIngame: any;
   pingingIngame: boolean;
+  lastTimer: number;
 
   constructor(kwargs: {
     dataProvider: DataProviderService;
@@ -30,6 +32,7 @@ export default class Controller extends EventEmitter implements Tickable {
     this.ddragon = kwargs.ddragon;
     this.swapToIngame = kwargs.swapToIngame;
     this.pingingIngame = false;
+    this.lastTimer = -1;
 
     this.dataProvider.on("connected", () => {
       log.debug("DataProvider connected!");
@@ -55,12 +58,15 @@ export default class Controller extends EventEmitter implements Tickable {
       // Also cache information about summoners
       this.dataProvider.cacheSummoners(newState.session).then();
     }
-    //TODO edge case: champ select aborted
     //TODO auto switch OBS input scene
+    if(newState.isChampSelectActive) {
+      this.lastTimer = this.state.data.timer;
+    }
     if (this.state.data.champSelectActive && !newState.isChampSelectActive) {
       log.info("ChampSelect ended!");
       this.state.champselectEnded();
-      if(this.state.data.timer === 0) {
+      if(this.state.data.timer === 0 && this.lastTimer === 0) {
+        log.info("Champ select finished. Game starting soon");
         this.pingingIngame = true;
       }
     }

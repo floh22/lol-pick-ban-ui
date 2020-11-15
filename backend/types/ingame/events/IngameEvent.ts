@@ -1,4 +1,5 @@
 export class IngameEvent {
+    eventType = 'ingame_event';
     EventID: number;
     EventName: string;
     EventTime: number;

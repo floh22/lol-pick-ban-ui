@@ -3,7 +3,7 @@ import { IngameEvent } from './IngameEvent';
 export class FirstTowerEvent extends IngameEvent {
     EventName = 'FirstTower';
 
-    constructor(EventID: number, EventName: string, EventTime: number) {
+    constructor({ EventID, EventName, EventTime }: any) {
         super(EventID, EventName, EventTime);
       }
 }

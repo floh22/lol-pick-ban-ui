@@ -48,6 +48,7 @@ const putPlaceholders = (team,  backendUrl) => {
       }
       pick.champion.loadingImg = makeUrlAbsolute(pick.champion.loadingImg, backendUrl);
       pick.champion.splashImg = makeUrlAbsolute(pick.champion.splashImg, backendUrl);
+      pick.champion.splashCenteredImg = makeUrlAbsolute(pick.champion.splashCenteredImg, backendUrl);
       pick.champion.squareImg = makeUrlAbsolute(pick.champion.squareImg, backendUrl);
     }
 
@@ -73,7 +74,7 @@ const putPlaceholders = (team,  backendUrl) => {
 };
 
 export default (state, backendUrl) => {
-  if (Object.keys(state).length !== 0) {
+  if (Object.keys(state).length !== 0 && state.blueTeam && state.redTeam) {
     putPlaceholders(state.blueTeam, backendUrl);
     putPlaceholders(state.redTeam, backendUrl);
   }

@@ -35,15 +35,19 @@ function App() {
             setConfig(hb.config);
         });
 
+        Window.PB.on('ingame_event', ingameEvent => {
+            console.log("received ingame event");
+            console.log(ingameEvent);
+            setGlobalState({currentlyIngame: true, ingameEvent:ingameEvent});
+        });
+
         Window.PB.start();
     }, []);
-
-    console.log(globalState);
 
     return (
         <div className="App">
             <Overlay state={convertState(globalState, Window.PB.backend)} config={config}/>
-            <OverlayIngame state={convertState(globalState, Window.PB.backend)} config={config}/>
+            <OverlayIngame state={globalState} config={config}/>
         </div>
     );
 

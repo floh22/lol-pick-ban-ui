@@ -1,6 +1,6 @@
 import { IngameEvent } from './IngameEvent';
 
-export class FirstTowerEvent extends IngameEvent {
+export class GamePauseEvent extends IngameEvent {
     EventName = 'GamePause';
 
     constructor(EventID: number, EventName: string, EventTime: number) {

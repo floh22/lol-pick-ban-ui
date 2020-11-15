@@ -35,6 +35,12 @@ export default class Overlay extends React.Component {
     render() {
         const { state, config } = this.props;
 
+        if(state.currentlyIngame === true){
+            return (
+                <div></div>
+            );
+        }
+
         if (state.champSelectActive && !this.state.openingAnimationPlayed) {
             this.playOpeningAnimation();
         }

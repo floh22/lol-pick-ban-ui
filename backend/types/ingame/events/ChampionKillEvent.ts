@@ -5,7 +5,7 @@ export class ChampionKillEvent extends IngameEvent {
   KillerName: string;
   Assisters: Array<string>;
 
-  constructor(EventID: number, EventName: string, EventTime: number, VictimName: string, KillerName: string, Assisters: Array<string>) {
+  constructor({ EventID, EventName, EventTime, VictimName, KillerName, Assisters }: any) {
     super(EventID, EventName, EventTime);
     this.VictimName = VictimName;
     this.KillerName = KillerName;

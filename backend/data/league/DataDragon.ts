@@ -5,9 +5,15 @@ import cliProgress from 'cli-progress';
 import logger from '../../logging';
 import { Champion, Spell } from '../../types/dto';
 import State from '../../state';
+import { join } from 'path';
 
 const log = logger('datadragon');
 const realm = 'euw';
+
+const getDirectories = (source: fs.PathLike): string[] =>
+  fs.readdirSync(source, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name)
 
 class DataDragon {
     versions = {
@@ -108,14 +114,20 @@ class DataDragon {
       const patchFolderChampion = patchFolder + '/champion';
       const patchFolderSpell = patchFolder + '/spell';
 
+
+      const dirs = getDirectories('./cache/');
+      if(dirs.length >> 1) {
+        this.deleteOldCaches(dirs, patch);
+      }
+
       if (fs.existsSync(patchFolder)) {
-        log.info(`Directory ${patchFolder} exists already. Please remove it if you want to re-download it.`);
+        log.info(`Cache ${patchFolder} exists already.`);
         return;
       }
       try {
         fs.mkdirSync('./cache');
       } catch (e) {
-        log.debug('Directory ./cache exists already or cannot be created.');
+        log.debug('Cache ./cache exists already or cannot be created.');
       }
       fs.mkdirSync(patchFolder);
       fs.mkdirSync(patchFolderChampion);
@@ -171,6 +183,24 @@ class DataDragon {
       bar.stop();
 
       log.info(`Downloading ${tasks.length} assets finished.`);
+
+      this.deleteOldCaches(dirs, patch);
+    }
+
+
+    deleteOldCaches(dirs: string[], patch: string): void {
+      log.info('More than one cache version detected. Deleting old caches');
+        dirs.forEach(dir => {
+          if(dir !== patch) {
+            fs.rmdir('./cache/' + dir, { recursive: true }, (err) => {
+              if (err) {
+                  throw err;
+              }
+          
+              log.info(`cache ${dir} deleted!`);
+          });
+          }
+        });
     }
 }
 
