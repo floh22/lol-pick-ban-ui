@@ -6,34 +6,32 @@ import DataDragon from "../data/league/datadragon";
 import logger from "../logging/logger";
 import Tickable from "../Tickable";
 import { CurrentIngameState } from "../data/CurrentIngameState";
-import { IngameEvent } from "../types/ingame/events/IngameEvent";
-import { GamePauseEvent } from "../types/ingame/events/GamePauseEvent";
-import { GameUnpauseEvent } from "../types/ingame/events/GameUnpauseEvent";
+import { IngameState } from './dto/IngameState';
 
 const log = logger("IngameController");
 
 export default class IngameController extends EventEmitter implements Tickable {
   dataProvider: IngameDataProviderService;
+  ingameState: IngameState;
   ddragon: DataDragon;
   swapToChampSelect: any;
-  pastEvents: Array<IngameEvent>;
   pastGameTime: number;
-  gamePaused: boolean;
+  gameOverSent: boolean;
 
   constructor(kwargs: {
     dataProvider: IngameDataProviderService;
+    ingameState: IngameState;
     ddragon: DataDragon;
     swapToChampSelect: any;
   }) {
     super();
 
-
+    this.ingameState = kwargs.ingameState;
     this.dataProvider = kwargs.dataProvider;
     this.ddragon = kwargs.ddragon;
     this.swapToChampSelect = kwargs.swapToChampSelect;
-    this.pastEvents = [];
     this.pastGameTime = -1;
-    this.gamePaused = false;
+    this.gameOverSent = false;
   }
 
   applyNewState(newState: CurrentIngameState): void {
@@ -45,32 +43,29 @@ export default class IngameController extends EventEmitter implements Tickable {
 
 
     //TODO: Clear past events on new game
-    if(this.pastGameTime === newState.gameStats.gameTime) {
+    if (this.pastGameTime === newState.gameStats.gameTime) {
       //SEND GAME PAUSE UPDATE
-      const pauseEvent = new GamePauseEvent(-1, 'GamePause', newState.gameStats.gameTime);
-      this.emit('pause', pauseEvent);
-      this.gamePaused = true;
-    } else if(this.gamePaused) {
+      this.ingameState.PauseGame(newState);
+    } else if (this.ingameState.stateData.gamePaused) {
       //SEND GAME UNPAUSE UPDATE
-      const pauseEvent = new GameUnpauseEvent(-1, 'GameUnpause', newState.gameStats.gameTime);
-      this.emit('unpause', pauseEvent);
-      this.gamePaused = false;
+      this.ingameState.UnpauseGame(newState);
     }
+    
+    this.ingameState.UpdateTimes(newState.gameStats.gameTime);
+    this.ingameState.stateData.gameTime = newState.gameStats.gameTime;
 
     let newEvents = [];
-    if (this.pastEvents.length > 0) {
-      newEvents = newState.session.Events.slice(this.pastEvents.length, newState.session.Events.length);
+    if (this.ingameState.allEvents.length > 0) {
+      newEvents = newState.session.Events.slice(this.ingameState.allEvents.length, newState.session.Events.length);
     }
     else {
       newEvents = newState.session.Events;
+      this.gameOverSent = false;
     }
 
-    newEvents.forEach(event => {
-      console.log('New Event of type' + event.EventName);
-      this.emit('ingame_event', event);
-    });
-
-    this.pastEvents = newState.session.Events;
+    this.ingameState.HandleNewEvents(newEvents);
+    
+    this.ingameState.allEvents = newState.session.Events;
     this.pastGameTime = newState.gameStats.gameTime;
     return;
   }
@@ -78,10 +73,13 @@ export default class IngameController extends EventEmitter implements Tickable {
   tick(): Promise<void> {
     return this.dataProvider.getCurrentData().then((newState: CurrentIngameState) => {
       this.applyNewState(newState);
-    }).catch(err => {
-      console.log("Game ended!")
-      this.pastEvents = [];
-      this.swapToChampSelect();
+    }).catch(() => {
+      if (!this.gameOverSent) {
+        log.info("Game ended!")
+        this.gameOverSent = true;
+        this.ingameState.StopGame();
+        this.swapToChampSelect();
+      }
     });
   }
 }

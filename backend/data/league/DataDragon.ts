@@ -5,7 +5,6 @@ import cliProgress from 'cli-progress';
 import logger from '../../logging';
 import { Champion, Spell } from '../../types/dto';
 import State from '../../state';
-import { join } from 'path';
 
 const log = logger('datadragon');
 const realm = 'euw';

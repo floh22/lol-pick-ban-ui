@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 //import { Action, Cell, Timer } from './';
 
-import { IngameEvent } from '../ingame/events/IngameEvent';
+import { IngameEvent } from './events/IngameEvent';
 import { FirstTowerEvent } from './events/FirstTowerEvent';
 import { GameStartEvent } from './events/GameStartEvent';
 import { InhibKilledEvent } from './events/InhibKilledEvent';
@@ -16,11 +16,6 @@ import { MultikillEvent } from './events/MultikillEvent';
 import { AceEvent } from './events/AceEvent';
 
 export class IngameSession {
-  /*myTeam: Array<Cell> = [];
-  theirTeam: Array<Cell> = [];
-  actions: Array<Array<Action>> = [];
-  timer: Timer = new Timer();
-*/
   Events: Array<IngameEvent> = [];
 
   constructor(session: Array<any>) {
@@ -60,7 +55,7 @@ export class IngameSession {
           this.Events.push(new AceEvent(event));
           break;
         default:
-          console.log('Cannot decode ingame event! Event type received:' + event[1]);
+          console.log('Cannot decode ingame event! Event type received:' + event.EventName);
           console.log(event);
           break;
       }

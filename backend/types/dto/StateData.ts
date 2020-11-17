@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import { Config, Meta, Team } from "./";
 
 export class StateData {

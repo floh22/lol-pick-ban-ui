@@ -1,8 +1,9 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable quotes */
 import * as ws from "ws";
-import * as fs from "fs";
 import * as http from "http";
+import fetch from "node-fetch";
 
 import logger from "../logging";
 import { StateData } from "../types/dto";
@@ -13,28 +14,30 @@ import HeartbeatEvent from "../types/events/HeartbeatEvent";
 import ChampSelectStartedEvent from "../types/events/ChampSelectStartedEvent";
 import ChampSelectEndedEvent from "../types/events/ChampSelectEndedEvent";
 import NewActionEvent from "../types/events/NewActionEvent";
-import { IngameEvent } from "../types/ingame/events/IngameEvent";
-import IngameController from "../state/IngameController";
-import { GameUnpauseEvent } from "../types/ingame/events/GameUnpauseEvent";
+import { IngameEvent } from "../ingame/events/IngameEvent";
+import { IngameState } from "../ingame/dto/IngameState";
+import TickManager from "../TickManager";
+import { IngameHeartbeatEvent } from "../ingame/events/IngameHeartbeatEvent";
 
 const log = logger("websocket");
-const fetch = require("node-fetch");
 
 class WebSocketServer {
   server: ws.Server;
   state: State;
-  ingameState: IngameController;
+  ingameState: IngameState;
   clients: Array<WebSocket> = [];
   exampleClients: Array<WebSocket> = [];
   heartbeatInterval?: NodeJS.Timeout;
   config: any;
 
-  constructor(server: http.Server, state: State, ingameState: IngameController) {
+  constructor(server: http.Server, state: State, ingameState: IngameState) {
     this.server = new ws.Server({ server });
     this.state = state;
     this.ingameState = ingameState;
-    
+
+
     this.sendHeartbeat = this.sendHeartbeat.bind(this);
+    this.sendIngameHeartbeat = this.sendIngameHeartbeat.bind(this);
 
     // Event listeners
     this.server.on("connection", (socket: WebSocket, request) =>
@@ -56,7 +59,7 @@ class WebSocketServer {
     });
 
     //Ingame Event listeners
-    
+
     ingameState.on("pause", (pauseEvent) => {
       this.sendIngameEvent(pauseEvent);
     })
@@ -65,13 +68,40 @@ class WebSocketServer {
       this.sendIngameEvent(unpauseEvent);
     })
 
+    /* Front end event handling
     ingameState.on("ingame_event", (ingameEvent) => {
       this.sendIngameEvent(ingameEvent);
     })
+*/
+    ingameState.on("game_over", (gameOverEvent) => {
+      this.sendIngameEvent(gameOverEvent);
+    });
+
+    ingameState.on("game_start", (gameStartEvent) => {
+      this.sendIngameEvent(gameStartEvent);
+    });
   }
 
   startHeartbeat(): void {
     this.heartbeatInterval = setInterval(this.sendHeartbeat, 10000);
+  }
+
+  stopHeartbeat(): void {
+    if (!this.heartbeatInterval !== undefined) {
+      clearInterval(this.heartbeatInterval as NodeJS.Timeout);
+      this.heartbeatInterval = undefined;
+    }
+  }
+
+  startIngameHeartbeat(): void {
+    this.heartbeatInterval = setInterval(this.sendIngameHeartbeat, 1000 / TickManager.tickRate);
+  }
+
+  stopIngameHeartbeat(): void {
+    if (this.heartbeatInterval !== undefined) {
+      clearInterval(this.heartbeatInterval as NodeJS.Timeout);
+      this.heartbeatInterval = undefined;
+    }
   }
 
   handleConnection(socket: WebSocket, request: http.IncomingMessage): void {
@@ -90,7 +120,6 @@ class WebSocketServer {
 
   sendIngameEvent(event: IngameEvent): void {
     const serializedEvent = JSON.stringify(event);
-    log.info(`New Event: ${serializedEvent}`);
 
     this.clients.forEach((client: WebSocket) => {
       client.send(serializedEvent);
@@ -98,7 +127,6 @@ class WebSocketServer {
   }
 
   sendHeartbeat(): void {
-    //this.config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
     this.api("https://stream-api.munich-esports.de/config.json").then(res => {
       this.config = res;
       const heartbeatEvent = new HeartbeatEvent(this.config);
@@ -111,6 +139,15 @@ class WebSocketServer {
 
   }
 
+  sendIngameHeartbeat(): void {
+    const ingameHeartbeat = new IngameHeartbeatEvent(this.ingameState.stateData);
+    const ingameHeartbeatSerialized = JSON.stringify(ingameHeartbeat);
+
+    this.clients.forEach((client: WebSocket) => {
+      client.send(ingameHeartbeatSerialized);
+    });
+  }
+
   async api(url: string): Promise<any> {
     const response = await fetch(url);
     if (!response.ok) {
@@ -118,6 +155,7 @@ class WebSocketServer {
     }
     return response.json() as Promise<any>;
   }
+
 }
 
 export default WebSocketServer;

@@ -1,18 +1,14 @@
-Reset past events on game exit/ clear state on game exit
-game over event
-
-
 front end overlay:
-Dragon Timer
--> Next dragon Type
+Dragon graphic
+REMOVED: NOT POSSIBLE! -> Next dragon Type
 -> Map type
 
-Baron Timer
+Baron graphic
 
 
 Wish list:
 Gold graph
--> get gold data
+NOT WITH API! SCREEN SCRAPING POSSIBLY-> get gold data
 -> send gold data
 -> gold graphic
 -> trigger gold graph somehow

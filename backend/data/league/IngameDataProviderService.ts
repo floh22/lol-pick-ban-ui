@@ -10,7 +10,7 @@ import Connector, {
     ExperimentalConnector,
 } from './connector';
 import { CurrentIngameState } from '../CurrentIngameState';
-import { IngameSession } from '../../types/ingame/IngameSession';
+import { IngameSession } from '../../ingame/IngameSession';
 import { Session, Summoner } from '../../types/lcu';
 const log = logger('IngameDataProviderService');
 
@@ -74,6 +74,7 @@ class IngameDataProviderService extends EventEmitter
             'https://127.0.0.1:2999/liveclientdata/gamestats',
             this.requestConfig
         );
+        
         const currentState = new CurrentIngameState(new IngameSession(response.body.Events), responseGameStats.body);
         return currentState;
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable quotes */
 import { EventEmitter } from "events";
 import convertState from "./converter";
@@ -7,7 +8,6 @@ import State from "./state";
 import DataDragon from "../data/league/datadragon";
 import logger from "../logging/logger";
 import Tickable from "../Tickable";
-import { debug } from "console";
 
 const log = logger("Controller");
 
@@ -17,7 +17,9 @@ export default class Controller extends EventEmitter implements Tickable {
   ddragon: DataDragon;
   swapToIngame: any;
   pingingIngame: boolean;
+  switched: boolean
   lastTimer: number;
+  failedPings: number;
 
   constructor(kwargs: {
     dataProvider: DataProviderService;
@@ -32,7 +34,9 @@ export default class Controller extends EventEmitter implements Tickable {
     this.ddragon = kwargs.ddragon;
     this.swapToIngame = kwargs.swapToIngame;
     this.pingingIngame = false;
+    this.switched = false;
     this.lastTimer = -1;
+    this.failedPings = 0;
 
     this.dataProvider.on("connected", () => {
       log.debug("DataProvider connected!");
@@ -54,19 +58,26 @@ export default class Controller extends EventEmitter implements Tickable {
     if (!this.state.data.champSelectActive && newState.isChampSelectActive) {
       log.info("ChampSelect started!");
       this.state.champselectStarted();
-
+      this.pingingIngame = false;
+      this.switched = false;
+      this.failedPings = 0;
       // Also cache information about summoners
       this.dataProvider.cacheSummoners(newState.session).then();
     }
+
+    
     //TODO auto switch OBS input scene
     if(newState.isChampSelectActive) {
       this.lastTimer = this.state.data.timer;
     }
+
+
     if (this.state.data.champSelectActive && !newState.isChampSelectActive) {
       log.info("ChampSelect ended!");
       this.state.champselectEnded();
       if(this.state.data.timer === 0 && this.lastTimer === 0) {
         log.info("Champ select finished. Game starting soon");
+        log.info("Pinging League In-game API to detect game start");
         this.pingingIngame = true;
       }
     }
@@ -110,13 +121,18 @@ export default class Controller extends EventEmitter implements Tickable {
 
   pingIngame(): void {
 
-    console.log('Pinging the ingame client to see if a game is currently running')
-
     this.dataProvider.pingIngame().then(response => {
-      if(response) {
+      if(response && !this.switched) {
+        this.switched = true;
         this.pingingIngame = false;
         log.info("Game started!")
         this.swapToIngame();
+      }
+    }).catch(() => {
+      this.failedPings++;
+      if(this.failedPings > 50) {
+        this.pingingIngame = false;
+        log.info("Pinged ingame too many times. Aborting");
       }
     });
   }
@@ -128,6 +144,8 @@ export default class Controller extends EventEmitter implements Tickable {
       if (this.pingingIngame) {
         this.pingIngame();
       }
+    }).catch(() => {
+      this.pingIngame();
     });
   }
 }

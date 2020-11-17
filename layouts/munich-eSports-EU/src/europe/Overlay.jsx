@@ -14,18 +14,18 @@ export default class Overlay extends React.Component {
     };
 
     playOpeningAnimation() {
-        this.setState({openingAnimationPlayed: true});
+        this.setState({ openingAnimationPlayed: true });
         setTimeout(() => {
-            this.setState({currentAnimationState: css.AnimationHidden});
+            this.setState({ currentAnimationState: css.AnimationHidden });
 
             setTimeout(() => {
-                this.setState({currentAnimationState: css.AnimationTimer + ' ' + css.AnimationBansPick});
+                this.setState({ currentAnimationState: css.AnimationTimer + ' ' + css.AnimationBansPick });
 
                 setTimeout(() => {
-                    this.setState({currentAnimationState: css.AnimationBansPick + ' ' + css.AnimationBansPickOnly});
+                    this.setState({ currentAnimationState: css.AnimationBansPick + ' ' + css.AnimationBansPickOnly });
 
                     setTimeout(() => {
-                        this.setState({currentAnimationState: css.AnimationPigs});
+                        this.setState({ currentAnimationState: css.AnimationPigs });
                     }, 1000);
                 }, 1450);
             }, 700);
@@ -35,7 +35,7 @@ export default class Overlay extends React.Component {
     render() {
         const { state, config } = this.props;
 
-        if(state.currentlyIngame === true){
+        if (state.currentlyIngame === true || config === undefined) {
             return (
                 <div></div>
             );
@@ -46,15 +46,13 @@ export default class Overlay extends React.Component {
         }
 
         if (!state.champSelectActive && this.state.openingAnimationPlayed) {
-            this.setState({openingAnimationPlayed: false});
-            this.setState({currentAnimationState: css.TheAbsoluteVoid});
+            this.setState({ openingAnimationPlayed: false });
+            this.setState({ currentAnimationState: css.TheAbsoluteVoid });
             return null;
         }
 
-        console.log(state);
-
-        const renderBans = (teamState) =>{
-            const list =  teamState.bans.map(ban => <Ban {...ban} />);
+        const renderBans = (teamState) => {
+            const list = teamState.bans.map(ban => <Ban {...ban} />);
             list.splice(3, 0, <div className={css.Spacing} />);
             return <div className={cx(css.BansBox)}>{list}</div>;
         };
@@ -65,12 +63,12 @@ export default class Overlay extends React.Component {
                     {teamState.picks.map(pick => <Pick config={this.props.config} {...pick} />)}
                 </div>
                 <div className={css.BansWrapper}>
-                    <div className={cx(css.Bans, {[css.WithScore]: config.frontend.scoreEnabled})}>
+                    <div className={cx(css.Bans, { [css.WithScore]: config.frontend.scoreEnabled })}>
                         {teamName === css.TeamBlue && config.frontend.scoreEnabled && <div className={css.TeamScore}>
                             {teamConfig.score}
                         </div>}
                         {teamName === css.TeamRed && renderBans(teamState)}
-                        <div className={cx(css.TeamName, {[css.WithoutCoaches]: !config.frontend.coachesEnabled})}>
+                        <div className={cx(css.TeamName, { [css.WithoutCoaches]: !config.frontend.coachesEnabled })}>
                             {teamConfig.name}
                             {config.frontend.coachesEnabled && <div className={css.CoachName}>
                                 Coach: {teamConfig.coach}
@@ -86,37 +84,37 @@ export default class Overlay extends React.Component {
         );
 
         return (
-            <div className={cx(css.Overlay, css.Europe, this.state.currentAnimationState)} style={{"--color-red": config.frontend.redTeam.color, "--color-blue": config.frontend.blueTeam.color}}>
+            <div className={cx(css.Overlay, css.Europe, this.state.currentAnimationState)} style={{ "--color-red": config.frontend.redTeam.color, "--color-blue": config.frontend.blueTeam.color }}>
                 {Object.keys(state).length === 0 && <div className={cx(css.infoBox)}>Not connected to backend service!</div>}
                 {Object.keys(state).length !== 0 &&
-                <div className={cx(css.ChampSelect)}>
-                    {!state.leagueConnected && <div className={cx(css.infoBox)}>Not connected to client!</div> }
-                    <div className={cx(css.MiddleBox)}>
-                        <div className={cx(css.Logo)}>
-                            <img src={logo} alt="" />
+                    <div className={cx(css.ChampSelect)}>
+                        {!state.leagueConnected && <div className={cx(css.infoBox)}>Not connected to client!</div>}
+                        <div className={cx(css.MiddleBox)}>
+                            <div className={cx(css.Logo)}>
+                                <img src={logo} alt="" />
+                            </div>
+                            <div className={cx(css.Patch)}>
+                                {state.state}
+                            </div>
+                            <div className={cx(css.Timer, {
+                                [`${css.Red} ${css.Blue}`]: !state.blueTeam.isActive && !state.redTeam.isActive,
+                                [css.Blue]: state.blueTeam.isActive,
+                                [css.Red]: state.redTeam.isActive
+                            })}>
+                                <div className={cx(css.Background, css.Blue)} />
+                                <div className={cx(css.Background, css.Red)} />
+                                {state.timer < 100 && <div className={cx(css.TimerChars)}>
+                                    {state.timer.toString().split('').map(char => <div
+                                        className={cx(css.TimerChar)}>{char}</div>)}
+                                </div>}
+                                {state.timer >= 100 && <div className={cx(css.TimerChars)}>
+                                    {state.timer}
+                                </div>}
+                            </div>
                         </div>
-                        <div className={cx(css.Patch)}>
-                            {state.state}
-                        </div>
-                        <div className={cx(css.Timer, {
-                            [`${css.Red} ${css.Blue}`]: !state.blueTeam.isActive && !state.redTeam.isActive,
-                            [css.Blue]: state.blueTeam.isActive,
-                            [css.Red]: state.redTeam.isActive
-                        })}>
-                            <div className={cx(css.Background, css.Blue)} />
-                            <div className={cx(css.Background, css.Red)} />
-                            {state.timer < 100 && <div className={cx(css.TimerChars)}>
-                                {state.timer.toString().split('').map(char => <div
-                                    className={cx(css.TimerChar)}>{char}</div>)}
-                            </div>}
-                            {state.timer >= 100 && <div className={cx(css.TimerChars)}>
-                                {state.timer}
-                            </div>}
-                        </div>
-                    </div>
-                    {renderTeam(css.TeamBlue, config.frontend.blueTeam, state.blueTeam)}
-                    {renderTeam(css.TeamRed, config.frontend.redTeam, state.redTeam)}
-                </div>}
+                        {renderTeam(css.TeamBlue, config.frontend.blueTeam, state.blueTeam)}
+                        {renderTeam(css.TeamRed, config.frontend.redTeam, state.redTeam)}
+                    </div>}
             </div>
         )
     }

@@ -7,15 +7,15 @@ const log = logger('tick');
 class TickManager {
   tickable: Tickable;
   timeout?: Timeout;
-  tickRate = 1;
+  static tickRate = 2;
 
   constructor(kwargs: { tickable: Tickable }) {
     this.tickable = kwargs.tickable;
   }
 
   startLoop(): void {
-    log.info(`Starting main loop with ${1 / this.tickRate} ticks/s!`);
-    this.timeout = setInterval(() => this.runLoop(), 1000 / this.tickRate);
+    log.info(`Starting main loop with ${TickManager.tickRate} ticks/s!`);
+    this.timeout = setInterval(() => this.runLoop(), 1000 / TickManager.tickRate);
   }
 
   async runLoop(): Promise<void> {

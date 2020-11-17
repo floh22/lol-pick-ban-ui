@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import EventEmitter from 'events';
-import * as fs from 'fs';
+import fetch from 'node-fetch';
 import { Config, StateData, Team } from '../types/dto';
-import logger from "../logging";
 
-const log = logger("state");
-const fetch = require("node-fetch");
 
 class State extends EventEmitter {
   data: StateData;
@@ -14,13 +12,13 @@ class State extends EventEmitter {
 
     this.data = new StateData();
     //this.data.config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
-    this.api("https://stream-api.munich-esports.de/config.json").then(res => {
+    this.api('https://stream-api.munich-esports.de/config.json').then(res => {
       this.data.config = res;
     });
   }
 
   champselectStarted(): void {
-    this.api("https://stream-api.munich-esports.de/config.json").then(res => {
+    this.api('https://stream-api.munich-esports.de/config.json').then(res => {
       this.data.config = res;
     });
 

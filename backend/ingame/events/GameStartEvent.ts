@@ -1,9 +1,9 @@
 import { IngameEvent } from './IngameEvent';
 
 export class GameStartEvent extends IngameEvent {
-    EventName = 'GameStart';
+    eventType = 'game_start';
 
     constructor({ EventID, EventName, EventTime }: any) {
-        super(EventID, EventName, EventTime);
+        super(EventID, 'GameStart', EventTime);
       }
 }

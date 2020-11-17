@@ -1,5 +1,5 @@
-import { IngameSession } from '../types/ingame/IngameSession';
-import { IngameStats } from '../types/ingame/IngameStats';
+import { IngameSession } from '../ingame/IngameSession';
+import { IngameStats } from '../ingame/IngameStats';
 
 export class CurrentIngameState {
   session: IngameSession;

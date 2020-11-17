@@ -1,9 +1,9 @@
 import { IngameEvent } from './IngameEvent';
 
-export class GameUnpauseEvent extends IngameEvent {
-    EventName = 'GameUnpause';
+export class GamePauseEvent extends IngameEvent {
+    eventType = 'game_pause';
 
     constructor(EventID: number, EventName: string, EventTime: number) {
-        super(EventID, EventName, EventTime);
+        super(EventID, 'GamePause', EventTime);
       }
 }

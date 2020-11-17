@@ -7,6 +7,7 @@ import logger, { setLogLevel } from './logging';
 import TickManager from './TickManager';
 import { AddressInfo } from 'net';
 import State from './state';
+import { IngameState } from './ingame/dto/IngameState';
 import { getDataProvider } from './data/DataProviderService';
 import minimist from 'minimist';
 import DataDragon from './data/league/datadragon';
@@ -14,7 +15,7 @@ import Controller from './state/controller';
 import GlobalContext from './GlobalContext';
 import './Console';
 
-import IngameController from './state/IngameController';
+import IngameController from './ingame/IngameController';
 import IngameDataProviderService from './data/league/IngameDataProviderService';
 
 const argv = minimist(process.argv.slice(2));
@@ -46,23 +47,30 @@ log.info('Configuration: ' + JSON.stringify(GlobalContext.commandLine));
 
 const swapToIngame = (): void => {
   tickManager.tickable = ingameController;
+  ingameController.gameOverSent = false;
+  wsServer.stopHeartbeat();
+  wsServer.startIngameHeartbeat();
 };
 const swapToChampSelect = (): void => {
   tickManager.tickable = controller;
+  wsServer.stopIngameHeartbeat();
+  wsServer.startHeartbeat();
 };
 const state = new State();
+const ingameState = new IngameState();
 const ddragon = new DataDragon(state);
 const dataProvider = getDataProvider();
 const controller = new Controller({ dataProvider, state, ddragon, swapToIngame });
-const ingameController = new IngameController({ dataProvider:new IngameDataProviderService(), ddragon, swapToChampSelect });
+const ingameController = new IngameController({ dataProvider:new IngameDataProviderService(), ingameState, ddragon, swapToChampSelect });
 const tickManager = new TickManager({ tickable:controller });
+let wsServer: WebSocketServer;
 
 const main = async (): Promise<void> => {
   await ddragon.init();
 
   const server = http.createServer(app);
   app.use('/cache', express.static(__dirname + '/../cache'));
-  const wsServer = new WebSocketServer(server, state, ingameController);
+  wsServer = new WebSocketServer(server, state, ingameState);
   wsServer.startHeartbeat();
 
   tickManager.startLoop();
