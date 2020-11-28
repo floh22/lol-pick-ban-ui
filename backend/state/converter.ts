@@ -1,8 +1,8 @@
-import {Action, ActionType, Cell, Timer} from '../types/lcu';
-import {Ban, Champion, Pick, Team} from '../types/dto';
+import { Action, ActionType, Cell, Timer } from '../types/lcu';
+import { Ban, Champion, Pick, Team } from '../types/dto';
 import DataProviderService from '../data/DataProviderService';
-import DataDragon from '../data/league/datadragon';
-import {CurrentState} from '../data/CurrentState';
+import DataDragon from '../data/league/DataDragon';
+import { CurrentState } from '../data/CurrentState';
 import RecordingDatapoint from '../recording/RecordingDatapoint';
 
 const convertTeam = (kwargs: { team: Array<Cell>; actions: Array<Action>; dataProvider: DataProviderService; ddragon: DataDragon }): Team => {

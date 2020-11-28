@@ -73,13 +73,21 @@ function App() {
         
     }, []);
 
-    return (
-        <div className="App">
-            <Overlay state={convertState(globalState, Window.PB.backend)} config={config}/>
-            <OverlayIngame state={globalState} config={config}/>
-        </div>
-    );
+    if (config) {
 
+        return (
+            <div className="App">
+                <Overlay state={convertState(globalState, Window.PB.backend)} config={config}/>
+                <OverlayIngame state={globalState} config={config}/>
+            </div>
+        );
+    } else {
+        return (
+            <div>
+                Loading config...
+            </div>
+        )
+    }
 
 }
 
