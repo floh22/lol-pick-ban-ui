@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-inferrable-types */
-//import { Action, Cell, Timer } from './';
 
 import { IngameEvent } from './events/IngameEvent';
 import { FirstTowerEvent } from './events/FirstTowerEvent';
@@ -14,6 +13,8 @@ import { BaronKillEvent } from './events/BaronKillEvent';
 import { ChampionKillEvent } from './events/ChampionKillEvent';
 import { MultikillEvent } from './events/MultikillEvent';
 import { AceEvent } from './events/AceEvent';
+import { FirstBloodEvent } from './events/FirstBloodEvent';
+import { GameCompletedEvent } from './events/GameCompletedEvent';
 
 export class IngameSession {
   Events: Array<IngameEvent> = [];
@@ -24,11 +25,17 @@ export class IngameSession {
         case 'GameStart':
           this.Events.push(new GameStartEvent(event));
           break;
+        case 'GameEnd':
+          this.Events.push(new GameCompletedEvent(event));
+          break;
         case 'MinionsSpawning':
           this.Events.push(new MinionsSpawningEvent(event));
           break;
         case 'FirstBrick':
           this.Events.push(new FirstTowerEvent(event));
+          break;
+        case 'FirstBlood':
+          this.Events.push(new FirstBloodEvent(event));
           break;
         case 'TurretKilled':
           this.Events.push(new TowerKilledEvent(event));
