@@ -1,9 +1,8 @@
 Pushd "%~dp0\src\"
-start runBackend.bat
-popd
+start installBackend.bat
 Pushd "%~dp0\src\layouts\munich-eSports-PB\"
-start runFrontend.bat
+start installFrontend.bat
 popd
 Pushd "%~dp0\src\layouts\munich-eSports-Ingame\"
-start runFrontend.bat
+start installFrontend.bat
 popd
