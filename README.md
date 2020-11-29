@@ -2,9 +2,9 @@
 UI to display both champ select and ingame information for league of legends
 
 ## Installation 
-1. Do you have NodeJS installed? If you do not know what this is, assume no. You can check by running 'node -v' in cmd
-   -> No? run installNodeJS.bat and follow the instructions.
-   -> Yes? Continue
+1. Do you have NodeJS installed? If you do not know what this is, assume no. You can check by running 'node -v' in cmd  
+   -> No? run installNodeJS.bat and follow the instructions.  
+   -> Yes? Continue  
 2. run setup.bat
 
 3. Add http://localhost:3000/?backend=ws://localhost:8999 to your champion select scene
@@ -22,7 +22,7 @@ UI to display both champ select and ingame information for league of legends
 
 
 
-##Side note 
-NodeJS is a javascript development environment. 
-Due to the nature of this tool it was not polished for ease of use
+## Side note 
+NodeJS is a javascript development environment.   
+Due to the nature of this tool it was not polished for ease of use  
 Feel free to remove NodeJS if you dont not wish to stream again, though having it will not affect your computer negatively

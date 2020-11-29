@@ -22,7 +22,7 @@ UI to display both champ select and ingame information for league of legends
 
 
 
-##Side note 
+## Side note 
 NodeJS is a javascript development environment. 
 Due to the nature of this tool it was not polished for ease of use
 Feel free to remove NodeJS if you dont not wish to stream again, though having it will not affect your computer negatively
