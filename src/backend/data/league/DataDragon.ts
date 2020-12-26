@@ -109,6 +109,12 @@ class DataDragon {
     async checkLocalCache(): Promise<void> {
       const patch = this.state.data.meta.version.champion;
 
+      const cacheFolder = './cache';
+
+      if(!fs.existsSync(cacheFolder)) {
+        fs.mkdirSync(cacheFolder);
+      }
+
       const patchFolder = `./cache/${patch}`;
       const patchFolderChampion = patchFolder + '/champion';
       const patchFolderSpell = patchFolder + '/spell';

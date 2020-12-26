@@ -34,30 +34,6 @@ function App() {
             setConfig(hb.config);
         });
 
-        /*
-
-        Window.PB.on('game_start', gameStart => {
-            setGlobalState({currentlyIngame: true, ingameStateData: gameStart});
-        });
-
-        Window.PB.on('game_pause', gamePause => {
-            console.log("Game Paused. Show this somehow?");
-        });
-
-        Window.PB.on('game_unpause', gameUnpause => {
-            console.log("Game Unpaused. Show this somehow?");
-        });
-
-        Window.PB.on('game_over', gameStop => {
-            console.log("Game Over!");
-            setGlobalState({currentlyIngame: false, blueTeam: {isActive: false, picks: [], bans: []}, redTeam: {isActive: false, picks: [], bans: []}});
-        });
-
-        Window.PB.on('ingame_heartbeat', hb => {
-            setGlobalState({currentlyIngame: true, ingameStateData: hb.ingameStateData});
-        });
-        */
-
         Window.PB.start();
         
     }, []);

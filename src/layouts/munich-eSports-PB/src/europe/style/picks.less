@@ -10,7 +10,7 @@
     width: 20%;
     height: 100%;
     overflow: hidden;
-    background-color: #001D33;
+    background-color: var(--color-timer);
     border-left: solid var(--border-between-color) 1px;
 
     &.Active {
@@ -28,8 +28,8 @@
     .PlayerName {
       transition: height 1s, font-size 1s, margin-top 1s, background-color 0.3s, color 0.3s;
       height: var(--pick-name-height);
-      color: white;
-      background-color: #000f1a;
+      color: var(--color-font);
+      background-color: var(--color-player-names);
       text-align: center;
 	  font-family: 'Raleway Light', sans-serif;
       font-size: calc(0.5 * var(--pick-name-height));
@@ -90,8 +90,8 @@
   &.Active {
     .PlayerName {
       position: relative;
-      background-color: white;
-      color: black;
+      background-color: var(--color-font);
+      color: var(--color-font-2);
     }
     .PlayerName::after {
       content: "";
@@ -117,7 +117,7 @@
   &.Active {
     .PlayerName {
       position: relative;
-      background-color: white;
+      background-color: var(--color-font);
       color: black;
     }
     .PlayerName::after {

@@ -15,6 +15,8 @@ import { MultikillEvent } from './events/MultikillEvent';
 import { AceEvent } from './events/AceEvent';
 import { FirstBloodEvent } from './events/FirstBloodEvent';
 import { GameCompletedEvent } from './events/GameCompletedEvent';
+import { InhibRespawnedEvent } from './events/InhibRespawnedEvent';
+import { InhibRespawningSoonEvent } from './events/InhibRespawningSoonEvent';
 
 export class IngameSession {
   Events: Array<IngameEvent> = [];
@@ -42,6 +44,12 @@ export class IngameSession {
           break;
         case 'InhibKilled':
           this.Events.push(new InhibKilledEvent(event));
+          break;
+        case 'InhibRespawned':
+          this.Events.push(new InhibRespawnedEvent(event));
+          break;
+        case 'InhibRespawningSoon':
+          this.Events.push(new InhibRespawningSoonEvent(event));
           break;
         case 'DragonKill':
           this.Events.push(new DragonKillEvent(event));

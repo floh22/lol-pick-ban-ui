@@ -19,7 +19,27 @@ export default class OverlayIngame extends React.Component {
     state = {
         dragonTimer: 300,
         baronTimer: 300,
+        dragonAnimationState: css.TheAbsoluteVoid,
+        dragonAnimationPlayed: false,
+        baronAnimationState: css.TheAbsoluteVoid,
+        baronAnimationPlayed: false
     };
+
+
+    playDragonAnimation() {
+        console.log("Playing Dragon animation");
+        setTimeout(() => {
+            this.setState({ dragonAnimationState: css.AnimationHidden });
+
+            setTimeout(() => {
+                this.setState({ dragonAnimationState: css.AnimationStandby });
+            }, 1000);
+        }, 1000);
+    }
+
+    playBaronAnimation() {
+
+    }
 
 
     render() {
@@ -79,8 +99,8 @@ export default class OverlayIngame extends React.Component {
         }
 
         const debugIngame = () => {
-            baronTimerRaw = 12;
-            dragonTimerRaw = 0;
+            baronTimerRaw = 121;
+            dragonTimerRaw = 119;
             baronTimerDate = setTimerText(baronTimerRaw, 'baron');
             dragonTimerDate = setTimerText(dragonTimerRaw, 'dragon');
         }
@@ -92,6 +112,16 @@ export default class OverlayIngame extends React.Component {
         } else {
             debugIngame();
         }
+
+        /*
+        if(dragonTimerRaw <= 120 && !this.state.dragonAnimationPlayed) {
+            this.setState({ dragonAnimationPlayed: true });
+            this.playDragonAnimation();
+        }
+        if(this.setState.dragonAnimationPlayed && dragonTimerRaw > 120) {
+            this.setState({ dragonAnimationPlayed: false });
+        }
+        */
 
         return (
             <div className={cx(css.Europe)}>
@@ -113,8 +143,8 @@ export default class OverlayIngame extends React.Component {
                             {baronTimerDate}
                         </div>}
                     </div>}
-                    {baronTimerRaw > 120 && <div className={css.Baron}></div>}
-                    {dragonTimerRaw <= 120 && <div className={cx(css.Dragon)} z-index={1}>
+                    {baronTimerRaw > 120 && <div className={cx(css.Baron)}></div>}
+                    {dragonTimerRaw < 120 && <div className={cx(css.Dragon)} z-index={1}>
                         <div className={cx(css.DragonBG)}>
                             <img src={dragonBackground} width={"100%"} alt="dragonBackground" />
                         </div>
@@ -131,7 +161,7 @@ export default class OverlayIngame extends React.Component {
                             {dragonTimerDate}
                         </div>}
                     </div>}
-                    {dragonTimerRaw > 120 && <div className={css.Dragon}></div>}
+                    {dragonTimerRaw > 120 && <div className={cx(css.Dragon)}></div>}
                 </div>
             </div>
         );

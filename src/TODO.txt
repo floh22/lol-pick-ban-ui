@@ -15,8 +15,6 @@ Past dragon icons
 
 Wish list:
 
-Separate champ select and ingame websites
-
 Runes
 -> get player runes
 -> send players + champions + runes
