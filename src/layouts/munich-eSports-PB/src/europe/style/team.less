@@ -39,7 +39,7 @@
     right: calc(50% + calc(var(--box-width) / 2));
 
     .TeamScore {
-      border-right: 3px solid rgb(0, 29, 51);
+      border-right: 3px solid var(--color-timer);
     }
 
     .Bans {
@@ -52,7 +52,7 @@
         border-left: solid var(--color-blue) var(--border-width);
 
         .BanImage.Active::before {
-          background-image: linear-gradient(to left, var(--color-blue) 0%, rgba(0, 29, 51, 1) 50%, var(--color-blue) 100%);
+          background-image: linear-gradient(to left, var(--color-blue) 0%, var(--color-timer) 50%, var(--color-blue) 100%);
         }
       }
     }
@@ -60,7 +60,7 @@
     .Picks {
       .Pick {
         .PickImage.Active::before {
-          background-image: linear-gradient(to left, var(--color-blue) 0%, rgba(0, 29, 51, 1) 50%, var(--color-blue) 100%);
+          background-image: linear-gradient(to left, var(--color-blue) 0%, var(--color-timer) 50%, var(--color-blue) 100%);
         }
       }
     }
@@ -87,7 +87,7 @@
         border-right: solid var(--color-red) var(--border-width);
 
         .BanImage.Active::before {
-          background-image: linear-gradient(to left, var(--color-red) 0%, rgba(0, 0, 0, 0) 50%, var(--color-red) 100%);
+          background-image: linear-gradient(to left, var(--color-red) 0%, var(--color-timer) 50%, var(--color-red) 100%);
         }
       }
     }
@@ -95,7 +95,7 @@
     .Picks {
       .Pick {
         .PickImage.Active::before {
-          background-image: linear-gradient(to left, var(--color-red) 0%, rgba(0, 0, 0, 0) 50%, var(--color-red) 100%);
+          background-image: linear-gradient(to left, var(--color-red) 0%, var(--color-timer) 50%, var(--color-red) 100%);
         }
       }
     }
